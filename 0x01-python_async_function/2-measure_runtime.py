@@ -4,8 +4,7 @@ Module with measure_time function.
 """
 
 import time
-from typing import List
-from asyncio import run
+import asyncio
 
 wait_n = __import__('1-concurrent_coroutines').wait_n
 
@@ -22,19 +21,10 @@ def measure_time(n: int, max_delay: int) -> float:
     Returns:
         float: Total elapsed time.
     """
-    start_time = time.time()
-
-    async def run_wait_n():
-        return await wait_n(n, max_delay)
-
-    # Run async function using run
-    run(run_wait_n())
-
-    end_time = time.time()
-    total_time = end_time - start_time
-
-    # Return total elapsed time
-    return total_time
+    start = time.perf_counter()
+    asyncio.run(wait_n(n, max_delay))
+    end = time.perf_counter()
+    return (end - start) / n
 
 
 if __name__ == "__main__":
