@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
-
 """
-Module with async coroutine wait_n.
+Module with asynchronous coroutine wait_n.
 """
 
 import asyncio
 from typing import List
+import importlib
 
-wait_random = __import__('0-basic_async_syntax').wait_random
+async_syntax_module = importlib.import_module("0-basic_async_syntax")
+wait_random = async_syntax_module.wait_random
 
 
 async def wait_n(n: int, max_delay: int) -> List[float]:
     """
-    Asynchronous coroutine that spawns wait_random n times
+    Asynchronous function that spawns wait_random n times
     with the specified max_delay.
 
     Args:
@@ -22,11 +23,13 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
     Returns:
         List[float]: List of delays in ascending order.
     """
-    delays = [await wait_random(max_delay) for _ in range(n)]
+    tasks = [wait_random(max_delay) for _ in range(n)]
+    delays = await asyncio.gather(*tasks)
     delays.sort()
     return delays
 
+
 if __name__ == "__main__":
-    print(asyncio.run(wait_n(5, 5)))
-    print(asyncio.run(wait_n(10, 7)))
-    print(asyncio.run(wait_n(10, 0)))
+    asyncio.run(wait_n(5, 5))
+    asyncio.run(wait_n(10, 7))
+    asyncio.run(wait_n(10, 0))

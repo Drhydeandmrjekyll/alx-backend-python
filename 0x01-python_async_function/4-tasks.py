@@ -7,8 +7,6 @@ import asyncio
 from typing import List, Callable
 
 task_wait_random = __import__('3-tasks').task_wait_random
-
-
 async def task_wait_n(n: int, max_delay: int) -> List[float]:
     """
     Asynchronous function that spawns task_wait_random n times with
@@ -25,8 +23,6 @@ async def task_wait_n(n: int, max_delay: int) -> List[float]:
     delays = await asyncio.gather(*tasks)
     delays.sort()
     return delays
-
-
 if __name__ == "__main__":
     n = 5
     max_delay = 6
