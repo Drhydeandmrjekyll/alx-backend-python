@@ -19,5 +19,7 @@ async def async_generator() -> AsyncGenerator[float, None]:
 
 
 async def print_yielded_values():
-    result = [i async for i in async_generator()]
+    result = []
+    async for i in async_generator():
+        result.append(i)
     print(result)
