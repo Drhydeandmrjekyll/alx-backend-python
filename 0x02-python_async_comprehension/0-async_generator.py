@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module with async generator.
+Module with async generator using async comprehensions.
 """
 
 import asyncio
@@ -8,16 +8,11 @@ import random
 from typing import AsyncGenerator
 
 
-async def numbers(limit: int) -> AsyncGenerator[float, None]:
-    for _ in range(limit):
-        await asyncio.sleep(1)
-        yield random.uniform(0, 10)
-
-
 async def async_generator() -> AsyncGenerator[float, None]:
     """
-    Coroutine that yields random number between 0 and 10 after
-    waiting 1 second, repeated 10 times.
+    Coroutine that yields a random number between 0 and 10
+    after waiting 1 second, repeated 10 times.
     """
-    async for num in numbers(10):
-        yield num
+    for _ in range(10):
+        await asyncio.sleep(1)
+        yield random.uniform(0, 10)
