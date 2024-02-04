@@ -4,33 +4,45 @@ Module containing unit tests for utils.py
 """
 
 import unittest
-from unittest.mock import patch, Mock
-from parameterized import parameterized
-from utils import get_json
+from unittest.mock import patch
+from utils import memoize
 
 
-class TestGetJson(unittest.TestCase):
+class TestMemoize(unittest.TestCase):
     """
-    Test cases for get_json function
+    Test cases for memoize decorator
     """
 
-    @parameterized.expand([
-        ("http://example.com", {"payload": True}),
-        ("http://holberton.io", {"payload": False})
-    ])
-    @patch('requests.get')
-    def test_get_json(self, test_url, test_payload, mock_requests_get):
+    class TestClass:
         """
-        Test get_json function with mocked requests.get
+        Test class with a_method and a_property decorated with memoize
         """
-        # Set up mock behavior
-        mock_response = Mock()
-        mock_response.json.return_value = test_payload
-        mock_requests_get.return_value = mock_response
 
-        # Call function
-        result = get_json(test_url)
+        def a_method(self):
+            return 42
 
-        # Assertions
-        mock_requests_get.assert_called_once_with(test_url)
-        self.assertEqual(result, test_payload)
+        @memoize
+        def a_property(self):
+            return self.a_method()
+
+    def test_memoize(self):
+        """
+        Test memoize decorator
+        """
+        # Create instance of TestClass
+        test_instance = self.TestClass()
+
+        # Patch a_method to return expected value
+        with patch.object(test_instance, 'a_method') as mock_a_method:
+            mock_a_method.return_value = 42
+
+            # Call a_property twice
+            result1 = test_instance.a_property
+            result2 = test_instance.a_property
+
+            # Assert that a_method is called once
+            mock_a_method.assert_called_once()
+
+            # Assert that results are correct
+            self.assertEqual(result1, 42)
+            self.assertEqual(result2, 42)
